@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+
+Console.WriteLine("Write your word: ");//ber användaren välja ett hemligt ord
+string SecretWord = Console.ReadLine();
+SecretWord = SecretWord.ToUpper(); //konverterar bokstäverna till stora bokstäver
+int WrongGuesses = 0;
+int MaxWrongGuesses = 6;
+List<char> GuessedLetters = new List<char>();//lista för att lagra gissade bokstäver
+
+bool GuessRight = false;//håller reda på om ordet är helt gissat
+
+while (WrongGuesses < MaxWrongGuesses && !GuessRight)//spelets loop fortsätter tills spelaren gissat rätt eller förlorat
+{
+    Console.Clear();//rensar konsolen för att hålla spelet snyggt
+    Console.WriteLine("Hänga gubbe");
+    Console.WriteLine($"Du har {MaxWrongGuesses - WrongGuesses} felgissningar kvar.");
+
+
+    VisaGissatOrd(SecretWord, GuessedLetters);
+
+    Console.Write("Gissa en bokstav: ");
+    char Guess;
+    try
+    {
+        Guess = char.ToUpper(Console.ReadLine()[0]); // Läser första tecknet från användarens inmatning och gör om det till en stor bokstav
+    }
+    catch
+    {
+        Console.WriteLine("Ogiltig inmatning! Försök igen.");
+        Console.ReadKey();
+        continue;
+    }
+
+
+    if (GuessedLetters.Contains(Guess))
+    {
+        Console.WriteLine("Du har redan gissat på den bokstaven! Försök igen.");
+        Console.ReadKey();
+        continue;
+    }
+
+    GuessedLetters.Add(Guess);
+
+
+    if (SecretWord.Contains(Guess))
+    {
+        Console.WriteLine("Rätt gissning!");
+    }
+    else
+    {
+        Console.WriteLine("Fel gissning!");
+        WrongGuesses++; // Ökar antalet felaktiga gissningar
+    }
+
+
+    GuessRight = ÄrOrdGissat(SecretWord, GuessedLetters);  // Kollar om hela ordet har gissats
+}
+
+
+Console.Clear();
+if (GuessRight)
+{
+    Console.WriteLine($"Grattis! Du gissade ordet {SecretWord}!");
+}
+else
+{
+    Console.WriteLine($"Du förlorade! Ordet var {SecretWord}.");
+}
+
+
+static void VisaGissatOrd(string SecretWord, List<char> GuessedLetters)
+{
+    foreach (char Letter in SecretWord)
+    {
+        if (GuessedLetters.Contains(Letter)) // Om bokstaven har gissats visas bokstaven
+        {
+            Console.Write(Letter + " ");
+        }
+        else // Annars visar den ett understreck.
+        {
+            Console.Write("_ ");
+        }
+    }
+    Console.WriteLine();
+}
+
+// Kontrollerar om hela ordet har gissats.
+static bool ÄrOrdGissat(string SecretWord, List<char> GuessedLetters)
+{
+    foreach (char Letter in SecretWord)
+    {
+        if (!GuessedLetters.Contains(Letter))// Om en bokstav i ordet inte har gissats, returnerar den false.
+        {
+            return false;
+        }
+    }
+    return true;
+}
